@@ -18,12 +18,10 @@
 
 package org.wso2.carbon.identity.data.publisher.application.authentication;
 
-import org.apache.axiom.om.util.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.idp.mgt.util.IdPManagementUtil;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeUnit;
@@ -80,8 +78,20 @@ public class AuthnDataPublisherUtils {
     public static String hashString(String value) throws NoSuchAlgorithmException {
         MessageDigest dgst = MessageDigest.getInstance(AuthPublisherConstants.SHA_256);
         byte[] byteValue = dgst.digest(value.getBytes());
-        value = Base64.encode(byteValue);
+        value = bytesToHex(byteValue);
         return value;
     }
 
+    /**
+     * Returns Hex string from given byte array
+     * @param byteArray Array of bytes
+     * @return Hex string
+     */
+    public static String bytesToHex(byte[] byteArray) {
+        final StringBuilder builder = new StringBuilder();
+        for (byte b : byteArray) {
+            builder.append(String.format("%02x", b));
+        }
+        return builder.toString();
+    }
 }
